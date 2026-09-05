@@ -2,7 +2,7 @@
 
 A single-page to-do list for NPL work, published as a Claude Artifact.
 
-- `npl-task-list.html` — the whole thing: markup, styles, and logic in one self-contained file.
+- `index.html` — the whole thing: markup, styles, and logic in one self-contained file.
 
 ## How it works
 
@@ -15,5 +15,16 @@ Live page: https://claude.ai/code/artifact/2ceaa546-4a1c-46dd-9dc2-c1b75c1ee75d
 
 ## Editing
 
-Edit `npl-task-list.html` and republish it to the same artifact URL. The seeded tasks live
+Edit `index.html` and republish it to the same artifact URL. The seeded tasks live
 in the `state` JSON near the bottom of the file; everything else is the shell.
+
+## Live site
+
+Every push to the default branch deploys this repo to GitHub Pages via
+`.github/workflows/pages.yml`:
+
+https://claudekovalenko.github.io/npl-to-code-list/
+
+The Pages copy is a plain static file, so it has no access to the Claude runtime —
+edits there save to the visitor's own browser only. Shared, persistent edits happen
+on the Claude artifact link above.
