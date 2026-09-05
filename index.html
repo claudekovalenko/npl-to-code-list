@@ -1,401 +1,545 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
+<meta name="color-scheme" content="light dark">
 <title>NPL Task List</title>
+<meta name="description" content="Everything on deck for NPL, ordered by priority.">
 <link rel="preconnect" href="https://fonts.googleapis.com">
 <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
-<link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Archivo:wght@500;600;700&family=IBM+Plex+Mono:wght@400;500&family=IBM+Plex+Sans:wght@400;500;600&display=swap">
+<link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Archivo:wght@600;700;800&family=IBM+Plex+Sans:wght@400;500;600&display=swap">
 <style>
   :root {
-    --paper:    #F4F6F6;
-    --surface:  #FFFFFF;
-    --ink:      #141C21;
-    --muted:    #5D6B73;
-    --faint:    #8B979D;
-    --line:     #E1E6E6;
-    --line-soft:#EDF0F0;
-    --accent:   #1E5F58;
-    --accent-ink:#12403B;
-    --high:     #A63D2B;
-    --medium:   #8A6516;
-    --low:      #4F626B;
-    --done:     #9BA6AB;
-    --focus:    #1E5F58;
-    --on-accent:#FFFFFF;
-    --shadow:   0 1px 2px rgba(20,28,33,.06), 0 6px 18px rgba(20,28,33,.05);
+    --paper:      #F3F5F5;
+    --surface:    #FFFFFF;
+    --surface-2:  #EBEFEF;
+    --ink:        #141C21;
+    --muted:      #5C6A72;
+    --faint:      #97A3A9;
+    --line:       #DDE3E4;
+    --accent:     #1E5F58;
+    --accent-soft:#DDECEA;
+    --accent-ink: #12403B;
+    --on-accent:  #FFFFFF;
+    --high:       #B8412C;
+    --high-soft:  #F7E3DE;
+    --medium:     #9A6E12;
+    --medium-soft:#F7ECD3;
+    --low:        #4E6470;
+    --low-soft:   #E4EAED;
+    --done:       #A5AFB4;
+    --shadow:     0 1px 2px rgba(20,28,33,.05), 0 4px 14px rgba(20,28,33,.05);
   }
   @media (prefers-color-scheme: dark) {
     :root:not([data-theme="light"]) {
-      --paper:    #10161A;
-      --surface:  #182126;
-      --ink:      #E6ECEE;
-      --muted:    #9BAAB1;
-      --faint:    #71828A;
-      --line:     #2A363C;
-      --line-soft:#222C31;
-      --accent:   #6FBBB1;
-      --accent-ink:#A8DCD4;
-      --high:     #E08A72;
-      --medium:   #D6AC5C;
-      --low:      #93A7B0;
-      --done:     #66757C;
-      --focus:    #6FBBB1;
-      --on-accent:#0E1417;
-      --shadow:   0 1px 2px rgba(0,0,0,.4), 0 8px 22px rgba(0,0,0,.28);
+      --paper:      #0F1519;
+      --surface:    #171F24;
+      --surface-2:  #202A30;
+      --ink:        #E6ECEE;
+      --muted:      #9DABB2;
+      --faint:      #6C7C84;
+      --line:       #28343A;
+      --accent:     #6FBBB1;
+      --accent-soft:#1B3330;
+      --accent-ink: #A8DCD4;
+      --on-accent:  #0E1417;
+      --high:       #E48A72;
+      --high-soft:  #3A211C;
+      --medium:     #DBB05E;
+      --medium-soft:#382E18;
+      --low:        #9CB0B9;
+      --low-soft:   #26323A;
+      --done:       #5E6C73;
+      --shadow:     0 1px 2px rgba(0,0,0,.4), 0 6px 18px rgba(0,0,0,.3);
     }
   }
   :root[data-theme="dark"] {
-    --paper:    #10161A;
-    --surface:  #182126;
-    --ink:      #E6ECEE;
-    --muted:    #9BAAB1;
-    --faint:    #71828A;
-    --line:     #2A363C;
-    --line-soft:#222C31;
-    --accent:   #6FBBB1;
-    --accent-ink:#A8DCD4;
-    --high:     #E08A72;
-    --medium:   #D6AC5C;
-    --low:      #93A7B0;
-    --done:     #66757C;
-    --focus:    #6FBBB1;
-    --on-accent:#0E1417;
-    --shadow:   0 1px 2px rgba(0,0,0,.4), 0 8px 22px rgba(0,0,0,.28);
+    --paper:      #0F1519;
+    --surface:    #171F24;
+    --surface-2:  #202A30;
+    --ink:        #E6ECEE;
+    --muted:      #9DABB2;
+    --faint:      #6C7C84;
+    --line:       #28343A;
+    --accent:     #6FBBB1;
+    --accent-soft:#1B3330;
+    --accent-ink: #A8DCD4;
+    --on-accent:  #0E1417;
+    --high:       #E48A72;
+    --high-soft:  #3A211C;
+    --medium:     #DBB05E;
+    --medium-soft:#382E18;
+    --low:        #9CB0B9;
+    --low-soft:   #26323A;
+    --done:       #5E6C73;
+    --shadow:     0 1px 2px rgba(0,0,0,.4), 0 6px 18px rgba(0,0,0,.3);
   }
 
+  *, *::before, *::after { box-sizing: border-box; }
+  html { -webkit-text-size-adjust: 100%; }
   body {
+    margin: 0;
     background: var(--paper);
     color: var(--ink);
-    font-family: "IBM Plex Sans", ui-sans-serif, system-ui, -apple-system, "Segoe UI", sans-serif;
-    font-size: 15px;
+    font-family: "IBM Plex Sans", ui-sans-serif, system-ui, -apple-system, "Segoe UI", Roboto, sans-serif;
+    font-size: 16px;
     line-height: 1.5;
     -webkit-font-smoothing: antialiased;
   }
+  button, input, select { font: inherit; color: inherit; }
+  button { cursor: pointer; }
+  [hidden] { display: none !important; }
+
   .wrap {
-    max-width: 46rem;
+    max-width: 44rem;
     margin: 0 auto;
-    padding: 2.75rem 1.25rem 4rem;
+    padding: clamp(1.5rem, 5vw, 3.5rem) clamp(1rem, 4vw, 1.5rem) 6rem;
     display: flex;
     flex-direction: column;
-    gap: 1.75rem;
+    gap: 1.5rem;
   }
 
   /* ---------- header ---------- */
-  header { display: flex; flex-direction: column; gap: .55rem; }
+  .head {
+    display: flex;
+    flex-direction: column;
+    gap: .35rem;
+  }
   .eyebrow {
-    font-family: "IBM Plex Mono", ui-monospace, monospace;
-    font-size: .7rem;
-    letter-spacing: .16em;
+    font-size: .8rem;
+    font-weight: 600;
+    letter-spacing: .12em;
     text-transform: uppercase;
     color: var(--accent);
   }
   h1 {
-    font-family: Archivo, ui-sans-serif, system-ui, sans-serif;
-    font-weight: 700;
-    font-size: 2rem;
-    line-height: 1.1;
-    letter-spacing: -.015em;
+    font-family: Archivo, "IBM Plex Sans", ui-sans-serif, system-ui, sans-serif;
+    font-weight: 800;
+    font-size: clamp(1.9rem, 6vw, 2.5rem);
+    line-height: 1.05;
+    letter-spacing: -.02em;
     margin: 0;
     text-wrap: balance;
   }
-  .lede { color: var(--muted); max-width: 34em; margin: 0; }
+  .lede { color: var(--muted); margin: .25rem 0 0; max-width: 36em; }
 
-  /* ---------- progress ---------- */
-  .status {
+  /* ---------- summary ---------- */
+  .summary {
+    display: grid;
+    grid-template-columns: repeat(3, 1fr);
+    gap: .5rem;
+  }
+  .stat {
+    background: var(--surface);
+    border: 1px solid var(--line);
+    border-radius: 10px;
+    padding: .7rem .85rem;
     display: flex;
-    align-items: center;
-    gap: .85rem;
-    padding-top: .35rem;
+    flex-direction: column;
+    gap: .1rem;
+    min-width: 0;
   }
-  .count {
-    font-family: "IBM Plex Mono", ui-monospace, monospace;
-    font-size: .78rem;
-    color: var(--muted);
+  .stat .n {
+    font-family: Archivo, "IBM Plex Sans", ui-sans-serif, sans-serif;
+    font-size: 1.5rem;
+    font-weight: 700;
+    line-height: 1;
+    letter-spacing: -.02em;
     font-variant-numeric: tabular-nums;
-    white-space: nowrap;
   }
-  .bar {
-    flex: 1;
-    height: 3px;
-    background: var(--line);
-    border-radius: 2px;
+  .stat .l { font-size: .78rem; color: var(--muted); white-space: nowrap; overflow: hidden; text-overflow: ellipsis; }
+  .stat.high .n { color: var(--high); }
+  .stat.done .n { color: var(--accent); }
+  .progress {
+    grid-column: 1 / -1;
+    height: 6px;
+    background: var(--surface-2);
+    border-radius: 3px;
     overflow: hidden;
   }
-  .bar span {
-    display: block;
-    height: 100%;
-    background: var(--accent);
-    width: 0;
-    transition: width .35s ease;
-  }
+  .progress span { display: block; height: 100%; width: 0; background: var(--accent); border-radius: 3px; transition: width .35s ease; }
 
   /* ---------- toolbar ---------- */
   .toolbar {
     display: flex;
-    flex-wrap: wrap;
     align-items: center;
-    gap: .4rem;
-    border-bottom: 1px solid var(--line);
-    padding-bottom: .75rem;
+    justify-content: space-between;
+    gap: .75rem;
+    flex-wrap: wrap;
   }
-  .filter {
-    font-family: "IBM Plex Mono", ui-monospace, monospace;
-    font-size: .72rem;
-    letter-spacing: .06em;
+  .seg {
+    display: inline-flex;
+    background: var(--surface-2);
+    border-radius: 999px;
+    padding: 3px;
+    gap: 2px;
+  }
+  .seg button {
+    border: 0;
+    background: transparent;
+    color: var(--muted);
+    font-size: .85rem;
+    font-weight: 500;
+    padding: .4rem .9rem;
+    border-radius: 999px;
+    min-height: 36px;
+  }
+  .seg button[aria-pressed="true"] {
+    background: var(--surface);
+    color: var(--ink);
+    box-shadow: 0 1px 2px rgba(0,0,0,.08);
+  }
+  .savehint { font-size: .8rem; color: var(--faint); }
+
+  /* ---------- groups ---------- */
+  .groups { display: flex; flex-direction: column; gap: 1.6rem; }
+  .group { display: flex; flex-direction: column; gap: .6rem; }
+  .group-label {
+    display: flex;
+    align-items: center;
+    gap: .5rem;
+    font-size: .78rem;
+    font-weight: 600;
+    letter-spacing: .08em;
     text-transform: uppercase;
     color: var(--muted);
-    background: none;
-    border: 1px solid transparent;
-    border-radius: 999px;
-    padding: .3rem .7rem;
-    cursor: pointer;
+    padding-left: .25rem;
   }
-  .filter:hover { color: var(--ink); border-color: var(--line); }
-  .filter[aria-pressed="true"] {
-    color: var(--accent-ink);
-    border-color: color-mix(in srgb, var(--accent) 40%, transparent);
-    background: color-mix(in srgb, var(--accent) 10%, transparent);
+  .group-label::before {
+    content: "";
+    width: 8px; height: 8px;
+    border-radius: 50%;
+    background: var(--gcolor, var(--low));
+    flex: none;
   }
-  .savehint {
-    margin-left: auto;
-    font-family: "IBM Plex Mono", ui-monospace, monospace;
-    font-size: .68rem;
-    color: var(--faint);
-    letter-spacing: .04em;
-  }
+  .group-label .cnt { color: var(--faint); font-weight: 500; letter-spacing: 0; text-transform: none; }
+  .group[data-prio="high"]   { --gcolor: var(--high); }
+  .group[data-prio="medium"] { --gcolor: var(--medium); }
+  .group[data-prio="low"]    { --gcolor: var(--low); }
 
-  /* ---------- groups + tasks ---------- */
-  .groups { display: flex; flex-direction: column; gap: 1.9rem; }
-  .group { display: flex; flex-direction: column; gap: .7rem; }
-  .group-label {
-    font-family: "IBM Plex Mono", ui-monospace, monospace;
-    font-size: .68rem;
-    letter-spacing: .14em;
-    text-transform: uppercase;
-    color: var(--faint);
-    display: flex;
-    align-items: baseline;
-    gap: .5rem;
-  }
-  .group-label b { color: var(--muted); font-weight: 500; }
-
-  ul.tasks { list-style: none; margin: 0; padding: 0; display: flex; flex-direction: column; gap: .6rem; }
+  ul.tasks { list-style: none; margin: 0; padding: 0; display: flex; flex-direction: column; gap: .55rem; }
 
   li.task {
     background: var(--surface);
     border: 1px solid var(--line);
-    border-left: 3px solid var(--prio, var(--low));
-    border-radius: 4px;
+    border-radius: 12px;
     box-shadow: var(--shadow);
     display: grid;
-    grid-template-columns: auto 1fr;
-    gap: .1rem .75rem;
-    padding: .85rem .9rem .8rem;
+    grid-template-columns: auto 1fr auto;
+    grid-template-areas:
+      "check title remove"
+      "check note  note"
+      "check meta  meta";
+    column-gap: .8rem;
+    padding: .95rem 1rem .9rem .95rem;
     align-items: start;
+    position: relative;
+    overflow: hidden;
   }
-  li.task[data-prio="high"]   { --prio: var(--high); }
-  li.task[data-prio="medium"] { --prio: var(--medium); }
-  li.task[data-prio="low"]    { --prio: var(--low); }
+  li.task::before {
+    content: "";
+    position: absolute;
+    left: 0; top: 0; bottom: 0;
+    width: 4px;
+    background: var(--prio, var(--low));
+  }
+  li.task[data-prio="high"]   { --prio: var(--high);   --prio-soft: var(--high-soft); }
+  li.task[data-prio="medium"] { --prio: var(--medium); --prio-soft: var(--medium-soft); }
+  li.task[data-prio="low"]    { --prio: var(--low);    --prio-soft: var(--low-soft); }
 
   .check {
-    width: 1.05rem;
-    height: 1.05rem;
-    margin-top: .18rem;
-    border: 1.5px solid var(--faint);
-    border-radius: 3px;
+    grid-area: check;
+    width: 26px; height: 26px;
+    margin-top: .05rem;
+    border: 2px solid var(--faint);
+    border-radius: 50%;
     background: transparent;
-    cursor: pointer;
     display: grid;
     place-items: center;
     padding: 0;
-    flex: none;
+    transition: background .15s ease, border-color .15s ease;
   }
-  .check svg { width: .72rem; height: .72rem; opacity: 0; transition: opacity .15s ease; }
-  .check svg path { stroke: var(--on-accent); stroke-width: 2.4; fill: none; stroke-linecap: round; stroke-linejoin: round; }
+  .check svg { width: 13px; height: 13px; opacity: 0; transition: opacity .15s ease; }
+  .check svg path { stroke: var(--on-accent); stroke-width: 2.6; fill: none; stroke-linecap: round; stroke-linejoin: round; }
   .check:hover { border-color: var(--accent); }
   .check[aria-pressed="true"] { background: var(--accent); border-color: var(--accent); }
   .check[aria-pressed="true"] svg { opacity: 1; }
 
   .title {
-    font-family: Archivo, ui-sans-serif, system-ui, sans-serif;
+    grid-area: title;
+    font-family: Archivo, "IBM Plex Sans", ui-sans-serif, sans-serif;
     font-weight: 600;
-    font-size: 1.02rem;
-    letter-spacing: -.005em;
+    font-size: 1.06rem;
     line-height: 1.35;
-    grid-column: 2;
-    outline-offset: 3px;
+    letter-spacing: -.005em;
+    padding: .05rem .25rem 0 0;
+    border-radius: 4px;
+    min-width: 0;
+    overflow-wrap: anywhere;
   }
   .note {
-    grid-column: 2;
+    grid-area: note;
     margin: .2rem 0 0;
     color: var(--muted);
-    font-size: .875rem;
+    font-size: .93rem;
+    line-height: 1.5;
     max-width: 60ch;
-    outline-offset: 3px;
+    border-radius: 4px;
+    min-width: 0;
+    overflow-wrap: anywhere;
   }
-  .note:empty::before {
-    content: "Add a note…";
-    color: var(--faint);
-  }
+  .note:empty::before { content: "Add a note…"; color: var(--faint); }
+  [contenteditable]:focus { outline: 2px solid var(--accent); outline-offset: 3px; }
+
   .meta {
-    grid-column: 2;
-    margin-top: .55rem;
+    grid-area: meta;
+    margin-top: .65rem;
     display: flex;
     flex-wrap: wrap;
     align-items: center;
-    gap: .5rem;
+    gap: .45rem;
   }
   .tag {
-    font-family: "IBM Plex Mono", ui-monospace, monospace;
-    font-size: .66rem;
-    letter-spacing: .08em;
-    text-transform: uppercase;
+    font-size: .76rem;
+    font-weight: 500;
     color: var(--muted);
-    border: 1px solid var(--line);
-    border-radius: 3px;
-    padding: .15rem .4rem;
-    outline-offset: 2px;
+    background: var(--surface-2);
+    border-radius: 6px;
+    padding: .22rem .55rem;
+    min-height: 28px;
+    display: inline-flex;
+    align-items: center;
   }
+  .tag:empty::before { content: "Add tag"; color: var(--faint); }
+  .prio-wrap { position: relative; display: inline-flex; }
   .prio-pick {
-    font-family: "IBM Plex Mono", ui-monospace, monospace;
-    font-size: .66rem;
-    letter-spacing: .08em;
-    text-transform: uppercase;
-    color: var(--prio, var(--low));
-    background: transparent;
-    border: 1px solid color-mix(in srgb, var(--prio, var(--low)) 35%, transparent);
-    border-radius: 3px;
-    padding: .16rem 1.1rem .16rem .4rem;
-    cursor: pointer;
     appearance: none;
-    background-image: linear-gradient(45deg, transparent 50%, currentColor 50%), linear-gradient(135deg, currentColor 50%, transparent 50%);
-    background-position: right .45rem center, right .29rem center;
-    background-size: .16rem .16rem, .16rem .16rem;
-    background-repeat: no-repeat;
-  }
-  .prio-pick option { color: var(--ink); background: var(--surface); }
-  .remove {
-    margin-left: auto;
-    font-family: "IBM Plex Mono", ui-monospace, monospace;
-    font-size: .66rem;
-    letter-spacing: .06em;
-    text-transform: uppercase;
-    color: var(--faint);
-    background: none;
-    border: none;
-    padding: .16rem .2rem;
+    -webkit-appearance: none;
+    border: 0;
+    border-radius: 6px;
+    background: var(--prio-soft, var(--low-soft));
+    color: var(--prio, var(--low));
+    font-size: .76rem;
+    font-weight: 600;
+    padding: .22rem 1.5rem .22rem .6rem;
+    min-height: 28px;
     cursor: pointer;
-    opacity: 0;
-    transition: opacity .15s ease;
   }
-  li.task:hover .remove, li.task:focus-within .remove { opacity: 1; }
-  .remove:hover { color: var(--high); }
+  .prio-pick option { color: var(--ink); background: var(--surface); font-weight: 400; }
+  .prio-wrap::after {
+    content: "";
+    position: absolute;
+    right: .55rem; top: 50%;
+    width: 6px; height: 6px;
+    border-right: 1.5px solid currentColor;
+    border-bottom: 1.5px solid currentColor;
+    transform: translateY(-70%) rotate(45deg);
+    color: var(--prio, var(--low));
+    pointer-events: none;
+  }
+  .remove {
+    grid-area: remove;
+    width: 32px; height: 32px;
+    margin: -.3rem -.35rem 0 0;
+    border: 0;
+    border-radius: 8px;
+    background: transparent;
+    color: var(--faint);
+    display: grid;
+    place-items: center;
+    padding: 0;
+  }
+  .remove svg { width: 14px; height: 14px; }
+  .remove svg path { stroke: currentColor; stroke-width: 2; stroke-linecap: round; }
+  .remove:hover { background: var(--high-soft); color: var(--high); }
 
-  li.task.is-done { background: transparent; box-shadow: none; border-color: var(--line-soft); }
-  li.task.is-done .title { color: var(--done); text-decoration: line-through; text-decoration-thickness: 1px; font-weight: 500; }
-  li.task.is-done .note { color: var(--done); }
+  li.task.is-done { background: transparent; box-shadow: none; }
+  li.task.is-done::before { background: var(--line); }
+  li.task.is-done .title { color: var(--done); text-decoration: line-through; text-decoration-thickness: 1.5px; }
+  li.task.is-done .note, li.task.is-done .tag { color: var(--done); }
+  li.task.is-done .prio-pick { opacity: .6; }
+
+  .empty {
+    color: var(--muted);
+    background: var(--surface);
+    border: 1px dashed var(--line);
+    border-radius: 12px;
+    padding: 1.4rem 1rem;
+    text-align: center;
+  }
 
   /* ---------- add ---------- */
   .add {
+    position: sticky;
+    bottom: 0;
+    margin-top: .5rem;
+    padding: .75rem 0 max(.75rem, env(safe-area-inset-bottom));
+    background: linear-gradient(to top, var(--paper) 70%, transparent);
     display: flex;
-    flex-wrap: wrap;
     gap: .5rem;
-    padding-top: .3rem;
+    flex-wrap: wrap;
+  }
+  .add .field {
+    flex: 1 1 14rem;
+    display: flex;
+    background: var(--surface);
+    border: 1px solid var(--line);
+    border-radius: 10px;
+    box-shadow: var(--shadow);
+    overflow: hidden;
   }
   .add input {
-    flex: 1 1 16rem;
-    font: inherit;
-    color: var(--ink);
-    background: var(--surface);
-    border: 1px solid var(--line);
-    border-radius: 4px;
-    padding: .55rem .7rem;
+    flex: 1;
+    min-width: 0;
+    border: 0;
+    background: transparent;
+    padding: .7rem .9rem;
+    min-height: 46px;
   }
   .add input::placeholder { color: var(--faint); }
+  .add input:focus { outline: none; }
+  .add .field:focus-within { border-color: var(--accent); box-shadow: 0 0 0 3px var(--accent-soft); }
   .add select {
-    font-family: "IBM Plex Mono", ui-monospace, monospace;
-    font-size: .72rem;
-    letter-spacing: .06em;
-    text-transform: uppercase;
+    appearance: none;
+    -webkit-appearance: none;
+    border: 0;
+    border-left: 1px solid var(--line);
+    background: var(--surface-2);
     color: var(--muted);
-    background: var(--surface);
-    border: 1px solid var(--line);
-    border-radius: 4px;
-    padding: .5rem .55rem;
+    font-size: .85rem;
+    font-weight: 500;
+    padding: 0 1.9rem 0 .8rem;
     cursor: pointer;
+    background-image: linear-gradient(45deg, transparent 50%, currentColor 50%), linear-gradient(135deg, currentColor 50%, transparent 50%);
+    background-position: right .9rem center, right .6rem center;
+    background-size: .3rem .3rem;
+    background-repeat: no-repeat;
   }
   .add button {
-    font-family: "IBM Plex Mono", ui-monospace, monospace;
-    font-size: .72rem;
-    letter-spacing: .08em;
-    text-transform: uppercase;
-    color: var(--on-accent);
+    flex: 0 0 auto;
+    border: 0;
+    border-radius: 10px;
     background: var(--accent);
-    border: 1px solid var(--accent);
-    border-radius: 4px;
-    padding: .5rem 1rem;
-    cursor: pointer;
+    color: var(--on-accent);
+    font-weight: 600;
+    padding: 0 1.2rem;
+    min-height: 46px;
+    box-shadow: var(--shadow);
   }
-  .add button:hover { filter: brightness(1.06); }
+  .add button:hover { filter: brightness(1.07); }
+
+  /* ---------- undo toast ---------- */
+  .toast {
+    position: fixed;
+    left: 50%;
+    bottom: calc(5.5rem + env(safe-area-inset-bottom));
+    transform: translateX(-50%);
+    background: var(--ink);
+    color: var(--paper);
+    border-radius: 999px;
+    padding: .55rem .6rem .55rem 1rem;
+    display: flex;
+    align-items: center;
+    gap: .75rem;
+    font-size: .9rem;
+    box-shadow: 0 8px 24px rgba(0,0,0,.25);
+    max-width: calc(100vw - 2rem);
+    z-index: 10;
+  }
+  .toast button {
+    border: 0;
+    border-radius: 999px;
+    background: rgba(255,255,255,.14);
+    color: inherit;
+    font-weight: 600;
+    padding: .3rem .8rem;
+  }
 
   footer {
     border-top: 1px solid var(--line);
-    padding-top: .9rem;
+    padding-top: 1rem;
     display: flex;
     flex-wrap: wrap;
-    gap: .5rem 1rem;
-    font-family: "IBM Plex Mono", ui-monospace, monospace;
-    font-size: .68rem;
-    letter-spacing: .04em;
+    gap: .35rem 1.25rem;
+    font-size: .8rem;
     color: var(--faint);
   }
 
-  .empty { color: var(--faint); font-size: .9rem; padding: .4rem 0; }
-
-  :focus-visible { outline: 2px solid var(--focus); outline-offset: 2px; border-radius: 2px; }
+  :focus-visible { outline: 2px solid var(--accent); outline-offset: 2px; }
   @media (prefers-reduced-motion: reduce) {
     * { transition: none !important; animation: none !important; }
   }
-</style>
 
-<div class="wrap">
-  <header>
+  @media (max-width: 480px) {
+    .summary { grid-template-columns: repeat(3, 1fr); gap: .4rem; }
+    .stat { padding: .6rem .65rem; border-radius: 8px; }
+    .stat .n { font-size: 1.3rem; }
+    .stat .l { font-size: .72rem; }
+    .toolbar { justify-content: flex-start; }
+    .savehint { width: 100%; }
+    li.task { padding: .85rem .8rem .8rem .85rem; border-radius: 10px; }
+    .add .field { flex-basis: 100%; }
+    .add button { flex: 1; }
+  }
+</style>
+</head>
+<body>
+
+<main class="wrap">
+  <header class="head">
     <div class="eyebrow">NPL</div>
     <h1>Task List</h1>
-    <p class="lede">Everything on deck right now, ordered by what matters most. Tick things off, edit any line, add what comes up.</p>
-    <div class="status">
-      <div class="count" id="count">0 of 0 done</div>
-      <div class="bar"><span id="bar"></span></div>
-    </div>
+    <p class="lede">Everything on deck, ordered by what matters most. Tap a circle to finish something, tap any text to edit it.</p>
   </header>
 
+  <section class="summary" aria-label="Progress">
+    <div class="stat"><span class="n" id="s-open">0</span><span class="l">open</span></div>
+    <div class="stat high"><span class="n" id="s-high">0</span><span class="l">high priority</span></div>
+    <div class="stat done"><span class="n" id="s-done">0</span><span class="l">done</span></div>
+    <div class="progress" aria-hidden="true"><span id="bar"></span></div>
+  </section>
+
   <div class="toolbar">
-    <button class="filter" data-filter="open" aria-pressed="true">Open</button>
-    <button class="filter" data-filter="all" aria-pressed="false">All</button>
-    <button class="filter" data-filter="done" aria-pressed="false">Done</button>
+    <div class="seg" role="group" aria-label="Show">
+      <button data-filter="open" aria-pressed="true">Open</button>
+      <button data-filter="all" aria-pressed="false">All</button>
+      <button data-filter="done" aria-pressed="false">Done</button>
+    </div>
     <span class="savehint" id="savehint">Saved</span>
   </div>
 
   <div class="groups" id="groups"></div>
 
   <form class="add" id="add">
-    <input id="add-title" type="text" placeholder="Add a task…" aria-label="New task" autocomplete="off">
-    <select id="add-prio" aria-label="Priority">
-      <option value="high">High</option>
-      <option value="medium" selected>Medium</option>
-      <option value="low">Low</option>
-    </select>
+    <div class="field">
+      <input id="add-title" type="text" placeholder="Add a task…" aria-label="New task" autocomplete="off" enterkeyhint="done">
+      <select id="add-prio" aria-label="Priority">
+        <option value="high">High</option>
+        <option value="medium" selected>Medium</option>
+        <option value="low">Low</option>
+      </select>
+    </div>
     <button type="submit">Add</button>
   </form>
 
   <footer>
     <span id="updated">—</span>
-    <span>Click any title or note to edit it</span>
+    <span id="where">Edits save on this device</span>
   </footer>
+</main>
+
+<div class="toast" id="toast" hidden>
+  <span id="toast-msg"></span>
+  <button type="button" id="undo">Undo</button>
 </div>
 
 <script id="state" type="application/json">{"savedAt":0,"tasks":[{"id":"consolidate","title":"Consolidate all NPL websites into one","note":"Inventory every site we run now, pick the primary domain, move the content over, and redirect the rest so no old link dies.","tag":"Web","priority":"high","done":false},{"id":"la2027","title":"Website + sign-up form for the LA 2027 push","note":"A page for the LA push with a form that collects names, emails, and how people want to help — so the list exists well before 2027.","tag":"LA 2027","priority":"medium","done":false},{"id":"gofundme","title":"Promote Trey's GoFundMe","note":"Share the link where it will actually reach people, and keep it visible on whatever site becomes the main one.","tag":"Fundraising","priority":"low","done":false}]}</script>
 
 <script>
-  // Pristine copy of this document, captured before anything renders. Publishing
-  // swaps only the state block inside it, so the shell is never DOM-serialized.
+  // Pristine copy of this document, captured before anything renders. When the
+  // page can publish itself (inside Claude), it swaps only the state block into
+  // this shell, so the live DOM is never serialized.
   var PRISTINE = document.documentElement.outerHTML;
 
   (function () {
@@ -409,20 +553,22 @@
     var artifact = null;
     var canPublish = false;
     var timer = null;
+    var toastTimer = null;
+    var lastRemoved = null;
 
-    // A newer local copy only wins when this view could not publish last time.
+    // A newer local copy wins when this device could not publish last time.
     try {
       var local = JSON.parse(localStorage.getItem(LS_KEY) || "null");
       if (local && local.savedAt > (state.savedAt || 0)) state = local;
     } catch (e) {}
 
+    function $(id) { return document.getElementById(id); }
     function esc(s) {
       return String(s == null ? "" : s).replace(/[&<>"]/g, function (c) {
         return { "&": "&amp;", "<": "&lt;", ">": "&gt;", '"': "&quot;" }[c];
       });
     }
-
-    function hint(msg) { document.getElementById("savehint").textContent = msg; }
+    function hint(msg) { $("savehint").textContent = msg; }
 
     function buildDoc(next) {
       var json = JSON.stringify(next).replace(/</g, "\\u003c");
@@ -437,21 +583,27 @@
       state.savedAt = Date.now();
       try { localStorage.setItem(LS_KEY, JSON.stringify(state)); } catch (e) {}
       render();
-      if (!canPublish) return;
+      if (!canPublish) { hint("Saved on this device"); return; }
       hint("Saving…");
       clearTimeout(timer);
       timer = setTimeout(function () {
         artifact.publish(buildDoc(state)).then(
           function () { hint("Saved for everyone"); },
           function (err) {
-            hint(err && err.code === "conflict" ? "Reloading newer version…" : "Saved in this browser only");
+            hint(err && err.code === "conflict" ? "Loading a newer version…" : "Saved on this device only");
           }
         );
       }, 700);
     }
 
+    function toast(msg) {
+      $("toast-msg").textContent = msg;
+      $("toast").hidden = false;
+      clearTimeout(toastTimer);
+      toastTimer = setTimeout(function () { $("toast").hidden = true; lastRemoved = null; }, 6000);
+    }
+
     function render() {
-      var groups = document.getElementById("groups");
       var visible = state.tasks.filter(function (t) {
         return filter === "all" || (filter === "done" ? t.done : !t.done);
       });
@@ -461,22 +613,23 @@
         var items = visible.filter(function (t) { return t.priority === p; });
         if (!items.length) return;
         var openCount = state.tasks.filter(function (t) { return t.priority === p && !t.done; }).length;
-        html += '<section class="group"><div class="group-label">' + LABELS[p] +
-          " <b>" + openCount + " open</b></div><ul class=\"tasks\">";
+        html += '<section class="group" data-prio="' + p + '"><div class="group-label">' + LABELS[p] +
+          '<span class="cnt">' + openCount + " open</span></div><ul class=\"tasks\">";
         items.forEach(function (t) {
           html += '<li class="task' + (t.done ? " is-done" : "") + '" data-prio="' + t.priority + '" data-id="' + esc(t.id) + '">' +
-            '<button class="check" aria-pressed="' + (t.done ? "true" : "false") + '" aria-label="Mark done">' +
+            '<button class="check" aria-pressed="' + (t.done ? "true" : "false") + '" aria-label="' + (t.done ? "Mark not done" : "Mark done") + '">' +
             '<svg viewBox="0 0 12 12" aria-hidden="true"><path d="M2.5 6.3 4.8 8.6 9.5 3.6"/></svg></button>' +
             '<div class="title" contenteditable="true" role="textbox" aria-label="Task">' + esc(t.title) + "</div>" +
+            '<button class="remove" aria-label="Remove task"><svg viewBox="0 0 12 12" aria-hidden="true"><path d="M2.5 2.5l7 7M9.5 2.5l-7 7"/></svg></button>' +
             '<p class="note" contenteditable="true" role="textbox" aria-label="Note">' + esc(t.note) + "</p>" +
             '<div class="meta">' +
             '<span class="tag" contenteditable="true" role="textbox" aria-label="Tag">' + esc(t.tag) + "</span>" +
-            '<select class="prio-pick" aria-label="Priority">' +
+            '<span class="prio-wrap"><select class="prio-pick" aria-label="Priority">' +
             PRIOS.map(function (o) {
-              return '<option value="' + o + '"' + (o === t.priority ? " selected" : "") + ">" + o + "</option>";
+              return '<option value="' + o + '"' + (o === t.priority ? " selected" : "") + ">" +
+                o.charAt(0).toUpperCase() + o.slice(1) + "</option>";
             }).join("") +
-            "</select>" +
-            '<button class="remove">Remove</button>' +
+            "</select></span>" +
             "</div></li>";
         });
         html += "</ul></section>";
@@ -486,14 +639,17 @@
         html = '<p class="empty">' +
           (filter === "done" ? "Nothing checked off yet." : "All clear — add the next thing below.") + "</p>";
       }
-      groups.innerHTML = html;
+      $("groups").innerHTML = html;
 
       var total = state.tasks.length;
       var done = state.tasks.filter(function (t) { return t.done; }).length;
-      document.getElementById("count").textContent = done + " of " + total + " done";
-      document.getElementById("bar").style.width = total ? (done / total) * 100 + "%" : "0%";
-      document.getElementById("updated").textContent = state.savedAt
-        ? "Last updated " + new Date(state.savedAt).toLocaleDateString(undefined, { month: "long", day: "numeric", year: "numeric" })
+      var high = state.tasks.filter(function (t) { return !t.done && t.priority === "high"; }).length;
+      $("s-open").textContent = total - done;
+      $("s-high").textContent = high;
+      $("s-done").textContent = done;
+      $("bar").style.width = total ? (done / total) * 100 + "%" : "0%";
+      $("updated").textContent = state.savedAt
+        ? "Updated " + new Date(state.savedAt).toLocaleDateString(undefined, { month: "short", day: "numeric", year: "numeric" })
         : "Not updated yet";
     }
 
@@ -503,67 +659,87 @@
       return state.tasks.filter(function (t) { return t.id === li.dataset.id; })[0] || null;
     }
 
-    document.getElementById("groups").addEventListener("click", function (e) {
+    var groups = $("groups");
+
+    groups.addEventListener("click", function (e) {
       var t = taskFrom(e.target);
       if (!t) return;
       if (e.target.closest(".check")) { t.done = !t.done; save(); }
       else if (e.target.closest(".remove")) {
+        lastRemoved = { task: t, index: state.tasks.indexOf(t) };
         state.tasks = state.tasks.filter(function (x) { return x.id !== t.id; });
         save();
+        toast('Removed "' + t.title + '"');
       }
     });
 
-    document.getElementById("groups").addEventListener("change", function (e) {
+    groups.addEventListener("change", function (e) {
       var t = taskFrom(e.target);
       if (t && e.target.classList.contains("prio-pick")) { t.priority = e.target.value; save(); }
     });
 
-    document.getElementById("groups").addEventListener("blur", function (e) {
+    groups.addEventListener("blur", function (e) {
       var t = taskFrom(e.target);
       if (!t) return;
       var el = e.target;
-      var text = el.textContent.trim();
-      if (el.classList.contains("title") && text && text !== t.title) { t.title = text; save(); }
-      else if (el.classList.contains("note") && text !== t.note) { t.note = text; save(); }
+      var text = el.textContent.replace(/\s+/g, " ").trim();
+      if (el.classList.contains("title")) {
+        if (!text) { el.textContent = t.title; return; }
+        if (text !== t.title) { t.title = text; save(); }
+      } else if (el.classList.contains("note") && text !== t.note) { t.note = text; save(); }
       else if (el.classList.contains("tag") && text !== t.tag) { t.tag = text; save(); }
-      else if (el.classList.contains("title") && !text) { el.textContent = t.title; }
     }, true);
 
-    document.getElementById("groups").addEventListener("paste", function (e) {
+    groups.addEventListener("paste", function (e) {
       if (!e.target.isContentEditable) return;
       e.preventDefault();
       var text = (e.clipboardData || window.clipboardData).getData("text").replace(/\s+/g, " ");
       document.execCommand("insertText", false, text);
     });
 
-    document.getElementById("groups").addEventListener("keydown", function (e) {
+    groups.addEventListener("keydown", function (e) {
       if (e.key === "Enter" && e.target.isContentEditable) { e.preventDefault(); e.target.blur(); }
+      if (e.key === "Escape" && e.target.isContentEditable) { e.target.blur(); }
     });
 
-    document.querySelectorAll(".filter").forEach(function (b) {
+    document.querySelectorAll(".seg button").forEach(function (b) {
       b.addEventListener("click", function () {
         filter = b.dataset.filter;
-        document.querySelectorAll(".filter").forEach(function (o) {
+        document.querySelectorAll(".seg button").forEach(function (o) {
           o.setAttribute("aria-pressed", String(o === b));
         });
         render();
       });
     });
 
-    document.getElementById("add").addEventListener("submit", function (e) {
+    $("add").addEventListener("submit", function (e) {
       e.preventDefault();
-      var input = document.getElementById("add-title");
+      var input = $("add-title");
       var title = input.value.trim();
-      if (!title) return;
+      if (!title) { input.focus(); return; }
       state.tasks.push({
         id: "t" + Date.now(),
         title: title,
         note: "",
         tag: "",
-        priority: document.getElementById("add-prio").value,
+        priority: $("add-prio").value,
         done: false
       });
       input.value = "";
+      if (filter === "done") {
+        filter = "open";
+        document.querySelectorAll(".seg button").forEach(function (o) {
+          o.setAttribute("aria-pressed", String(o.dataset.filter === "open"));
+        });
+      }
+      save();
+    });
+
+    $("undo").addEventListener("click", function () {
+      if (!lastRemoved) return;
+      state.tasks.splice(Math.min(lastRemoved.index, state.tasks.length), 0, lastRemoved.task);
+      lastRemoved = null;
+      $("toast").hidden = true;
       save();
     });
 
@@ -571,13 +747,16 @@
 
     if (window.claude && window.claude.use) {
       window.claude.use("artifact").then(function (api) {
-        if (!api) { hint("Changes save in this browser"); return; }
+        if (!api) { hint("Saved on this device"); return; }
         artifact = api;
         canPublish = true;
         hint("Saved for everyone");
-      }, function () { hint("Changes save in this browser"); });
+        $("where").textContent = "Edits save for everyone with this link";
+      }, function () { hint("Saved on this device"); });
     } else {
-      hint("Changes save in this browser");
+      hint("Saved on this device");
     }
   })();
 </script>
+</body>
+</html>
