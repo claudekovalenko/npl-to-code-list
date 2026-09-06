@@ -429,6 +429,111 @@
   }
   .add button:hover { filter: brightness(1.07); }
 
+  /* ---------- code / branches ---------- */
+  .repo { display: flex; flex-direction: column; gap: .7rem; }
+  .repo-head {
+    display: flex;
+    align-items: flex-end;
+    justify-content: space-between;
+    gap: .75rem;
+    flex-wrap: wrap;
+  }
+  .repo h2 {
+    font-family: Archivo, "IBM Plex Sans", ui-sans-serif, system-ui, sans-serif;
+    font-weight: 700;
+    font-size: 1.2rem;
+    letter-spacing: -.01em;
+    margin: 0;
+  }
+  .repo-sub { margin: .15rem 0 0; font-size: .85rem; color: var(--muted); }
+  .repo-sub a, .branch-note a { color: var(--accent); text-decoration: none; }
+  .repo-sub a:hover, .branch-note a:hover { text-decoration: underline; }
+  .ghost {
+    border: 1px solid var(--line);
+    background: var(--surface);
+    color: var(--muted);
+    border-radius: 8px;
+    padding: .35rem .8rem;
+    font-size: .82rem;
+    font-weight: 500;
+    min-height: 34px;
+  }
+  .ghost:hover { border-color: var(--accent); color: var(--accent); }
+  .ghost[disabled] { opacity: .55; cursor: default; }
+
+  ul.branches { list-style: none; margin: 0; padding: 0; display: flex; flex-direction: column; gap: .4rem; }
+  li.branch {
+    background: var(--surface);
+    border: 1px solid var(--line);
+    border-radius: 10px;
+    box-shadow: var(--shadow);
+    padding: .6rem .8rem;
+    display: flex;
+    align-items: center;
+    gap: .45rem;
+    flex-wrap: wrap;
+  }
+  li.branch.is-default { border-color: var(--accent); }
+  .bname {
+    display: inline-flex;
+    align-items: center;
+    gap: .4rem;
+    font-weight: 600;
+    font-size: .95rem;
+    color: var(--ink);
+    text-decoration: none;
+    min-width: 0;
+    overflow-wrap: anywhere;
+  }
+  .bname svg { width: 14px; height: 14px; flex: none; color: var(--faint); }
+  .bname svg path, .bname svg circle { stroke: currentColor; stroke-width: 1.7; fill: none; }
+  .bname:hover { color: var(--accent); }
+  .bname:hover svg { color: var(--accent); }
+  .badge {
+    font-size: .68rem;
+    font-weight: 700;
+    letter-spacing: .06em;
+    text-transform: uppercase;
+    border-radius: 5px;
+    padding: .18rem .42rem;
+    background: var(--accent-soft);
+    color: var(--accent-ink);
+  }
+  .badge.lock { background: var(--surface-2); color: var(--muted); }
+  .bmeta {
+    margin-left: auto;
+    display: flex;
+    align-items: center;
+    gap: .6rem;
+    font-size: .78rem;
+    color: var(--faint);
+    white-space: nowrap;
+  }
+  .bsha {
+    font-family: ui-monospace, SFMono-Regular, Menlo, Consolas, monospace;
+    font-size: .76rem;
+    color: var(--muted);
+    text-decoration: none;
+  }
+  .bsha:hover { color: var(--accent); }
+  .bmsg {
+    flex-basis: 100%;
+    margin: .1rem 0 0;
+    font-size: .84rem;
+    color: var(--muted);
+    overflow-wrap: anywhere;
+  }
+  .bmsg .who { color: var(--faint); }
+  .branch-note {
+    color: var(--muted);
+    background: var(--surface);
+    border: 1px dashed var(--line);
+    border-radius: 10px;
+    padding: 1.1rem 1rem;
+    text-align: center;
+    font-size: .9rem;
+  }
+
   /* ---------- undo toast ---------- */
   .toast {
     position: fixed;
@@ -481,6 +586,7 @@
     li.task { padding: .85rem .8rem .8rem .85rem; border-radius: 10px; }
     .add .field { flex-basis: 100%; }
     .add button { flex: 1; }
+    .bmeta { margin-left: 0; flex-basis: 100%; }
   }
 </style>
 </head>
@@ -522,6 +628,19 @@
     </div>
     <button type="submit">Add</button>
   </form>
+
+  <section class="repo" aria-labelledby="repo-h">
+    <div class="repo-head">
+      <div>
+        <h2 id="repo-h">Code</h2>
+        <p class="repo-sub" id="repo-sub">Branches on <a href="https://github.com/claudekovalenko/npl-to-code-list" target="_blank" rel="noopener">claudekovalenko/npl-to-code-list</a></p>
+      </div>
+      <button type="button" class="ghost" id="repo-refresh">Refresh</button>
+    </div>
+    <ul class="branches" id="branches" aria-live="polite">
+      <li class="branch-note">Loading branches…</li>
+    </ul>
+  </section>
 
   <footer>
     <span id="updated">—</span>
@@ -756,6 +875,136 @@
     } else {
       hint("Saved on this device");
     }
+  })();
+
+  // ---- Code: every branch on the GitHub repo, read live from the public API ----
+  (function () {
+    var OWNER = "claudekovalenko";
+    var REPO = "npl-to-code-list";
+    var API = "https://api.github.com/repos/" + OWNER + "/" + REPO;
+    var WEB = "https://github.com/" + OWNER + "/" + REPO;
+    var MAX_PAGES = 5;      // 500 branches is plenty
+    var MAX_DETAIL = 15;    // one extra request each, so cap it
+
+    var list = document.getElementById("branches");
+    var sub = document.getElementById("repo-sub");
+    var refresh = document.getElementById("repo-refresh");
+    var subBase = sub.innerHTML;
+    var branches = [];
+    var defaultBranch = "";
+
+    var ICON = '<svg viewBox="0 0 16 16" aria-hidden="true">' +
+      '<path d="M4.5 5.5v5"/><circle cx="4.5" cy="3.5" r="1.6"/><circle cx="4.5" cy="12.5" r="1.6"/>' +
+      '<circle cx="11.5" cy="3.5" r="1.6"/><path d="M11.5 5.5c0 2.6-2.3 3.4-4.4 3.9"/></svg>';
+
+    function esc(s) {
+      return String(s == null ? "" : s).replace(/[&<>"]/g, function (c) {
+        return { "&": "&amp;", "<": "&lt;", ">": "&gt;", '"': "&quot;" }[c];
+      });
+    }
+    function note(html) { list.innerHTML = '<li class="branch-note">' + html + "</li>"; }
+    // Slashes in a branch name are path separators on GitHub, so escape around them.
+    function refPath(name) { return String(name).split("/").map(encodeURIComponent).join("/"); }
+    function link() { return '<a href="' + WEB + '/branches" target="_blank" rel="noopener">View the branches on GitHub</a>'; }
+
+    function ago(iso) {
+      var d = new Date(iso);
+      if (isNaN(d)) return "";
+      var mins = (Date.now() - d.getTime()) / 60000;
+      if (mins < 1) return "just now";
+      if (mins < 60) return Math.round(mins) + "m ago";
+      if (mins < 1440) return Math.round(mins / 60) + "h ago";
+      if (mins < 43200) return Math.round(mins / 1440) + "d ago";
+      return d.toLocaleDateString(undefined, { month: "short", day: "numeric", year: "numeric" });
+    }
+
+    function json(url) {
+      return fetch(url, { headers: { Accept: "application/vnd.github+json" } }).then(function (r) {
+        if (r.ok) return r.json();
+        var err = new Error("HTTP " + r.status);
+        err.status = r.status;
+        throw err;
+      });
+    }
+
+    // Default branch first, then freshest first once we know commit dates,
+    // and alphabetically for anything still undated.
+    function sort() {
+      branches.sort(function (a, b) {
+        if ((a.name === defaultBranch) !== (b.name === defaultBranch)) return a.name === defaultBranch ? -1 : 1;
+        if (a.date && b.date) return a.date < b.date ? 1 : -1;
+        if (a.date || b.date) return a.date ? -1 : 1;
+        return a.name.localeCompare(b.name);
+      });
+    }
+
+    function render() {
+      if (!branches.length) { note("This repository has no branches yet."); return; }
+
+      list.innerHTML = branches.map(function (b) {
+        var isDefault = b.name === defaultBranch;
+        var sha = String(b.commit && b.commit.sha || "");
+        var html = '<li class="branch' + (isDefault ? " is-default" : "") + '">' +
+          '<a class="bname" href="' + WEB + "/tree/" + refPath(b.name) + '" target="_blank" rel="noopener">' +
+          ICON + esc(b.name) + "</a>";
+        if (isDefault) html += '<span class="badge">default</span>';
+        if (b.protected) html += '<span class="badge lock">protected</span>';
+        html += '<span class="bmeta">';
+        if (sha) html += '<a class="bsha" href="' + WEB + "/commit/" + esc(sha) + '" target="_blank" rel="noopener">' + esc(sha.slice(0, 7)) + "</a>";
+        if (b.date) html += "<span>" + esc(ago(b.date)) + "</span>";
+        html += "</span>";
+        if (b.message) {
+          html += '<p class="bmsg">' + esc(b.message) +
+            (b.author ? ' <span class="who">· ' + esc(b.author) + "</span>" : "") + "</p>";
+        }
+        return html + "</li>";
+      }).join("");
+
+      sub.innerHTML = subBase + " · " + branches.length + " branch" + (branches.length === 1 ? "" : "es");
+    }
+
+    function page(n, acc) {
+      return json(API + "/branches?per_page=100&page=" + n).then(function (rows) {
+        acc = acc.concat(rows);
+        return rows.length === 100 && n < MAX_PAGES ? page(n + 1, acc) : acc;
+      });
+    }
+
+    // A second pass for the tip commit of the first few branches — the subject
+    // line and date are what make the list readable, but they cost a request each.
+    function detail() {
+      return Promise.all(branches.slice(0, MAX_DETAIL).map(function (b) {
+        if (!b.commit || !b.commit.url) return null;
+        return json(b.commit.url).then(function (c) {
+          var commit = c && c.commit || {};
+          b.date = (commit.committer || commit.author || {}).date || "";
+          b.author = (commit.author || {}).name || "";
+          b.message = String(commit.message || "").split("\n")[0];
+        }, function () {});
+      })).then(function () { sort(); render(); });
+    }
+
+    function load() {
+      refresh.disabled = true;
+      note("Loading branches…");
+      json(API).then(function (repo) { defaultBranch = repo.default_branch || ""; }, function () {})
+        .then(function () { return page(1, []); })
+        .then(function (all) {
+          branches = all;
+          sort();
+          render();
+          return detail();
+        })
+        .catch(function (err) {
+          note(err && err.status === 403
+            ? "GitHub is rate-limiting anonymous requests right now. " + link() + "."
+            : "Couldn't reach the GitHub API from here. " + link() + ".");
+        })
+        .then(function () { refresh.disabled = false; });
+    }
+
+    refresh.addEventListener("click", load);
+    load();
   })();
 </script>
 </body>
