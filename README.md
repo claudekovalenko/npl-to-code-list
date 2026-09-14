@@ -18,6 +18,27 @@ Live page: https://claude.ai/code/artifact/2ceaa546-4a1c-46dd-9dc2-c1b75c1ee75d
 Edit `index.html` and republish it to the same artifact URL. The seeded tasks live
 in the `state` JSON near the bottom of the file; everything else is the shell.
 
+## Owners and tracks
+
+A task can carry an **owner** and a list of **tracks** — the parallel pieces of one
+piece of work, each with its own owner and checkbox. Tracks exist so work that several
+people do at the same time stays one item on the list instead of splintering into four
+unrelated cards.
+
+Every chip is editable in place: click an owner to rename it, `+ Track` to add a track,
+the `×` to drop one (clearing a track's text removes it too). Owner chip colors are
+derived from the name itself, so the same person is the same color on every card and
+nobody has to configure a palette.
+
+In the state JSON these are optional per task:
+
+```json
+"owner": "Me",
+"steps": [{ "id": "c-site", "text": "…", "owner": "Me", "done": false }]
+```
+
+Tasks without them render exactly as before, with an empty "Owner" chip to fill in.
+
 ## Code section
 
 Below the task list, a **Code** section lists every branch on

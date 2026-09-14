@@ -30,6 +30,7 @@
     --low-soft:   #E4EAED;
     --done:       #A5AFB4;
     --shadow:     0 1px 2px rgba(20,28,33,.05), 0 4px 14px rgba(20,28,33,.05);
+    --who-bg-s: 40%; --who-bg-l: 91%; --who-fg-s: 46%; --who-fg-l: 31%;
   }
   @media (prefers-color-scheme: dark) {
     :root:not([data-theme="light"]) {
@@ -52,6 +53,7 @@
       --low-soft:   #26323A;
       --done:       #5E6C73;
       --shadow:     0 1px 2px rgba(0,0,0,.4), 0 6px 18px rgba(0,0,0,.3);
+      --who-bg-s: 30%; --who-bg-l: 20%; --who-fg-s: 52%; --who-fg-l: 76%;
     }
   }
   :root[data-theme="dark"] {
@@ -74,6 +76,7 @@
     --low-soft:   #26323A;
     --done:       #5E6C73;
     --shadow:     0 1px 2px rgba(0,0,0,.4), 0 6px 18px rgba(0,0,0,.3);
+    --who-bg-s: 30%; --who-bg-l: 20%; --who-fg-s: 52%; --who-fg-l: 76%;
   }
 
   *, *::before, *::after { box-sizing: border-box; }
@@ -230,6 +233,7 @@
     grid-template-areas:
       "check title remove"
       "check note  note"
+      "check steps steps"
       "check meta  meta";
     column-gap: .8rem;
     padding: .95rem 1rem .9rem .95rem;
@@ -428,6 +432,121 @@
     box-shadow: var(--shadow);
   }
   .add button:hover { filter: brightness(1.07); }
+
+  /* ---------- tracks (parallel sub-work) ---------- */
+  .steps { grid-area: steps; margin-top: .7rem; }
+  .steps-head {
+    display: flex;
+    align-items: baseline;
+    gap: .5rem;
+    font-size: .72rem;
+    font-weight: 700;
+    letter-spacing: .1em;
+    text-transform: uppercase;
+    color: var(--faint);
+    margin-bottom: .25rem;
+  }
+  .steps-head .of { letter-spacing: 0; text-transform: none; font-weight: 500; }
+  ul.steplist {
+    list-style: none;
+    margin: 0;
+    padding: 0;
+    border-left: 2px solid var(--line);
+    padding-left: .7rem;
+    display: flex;
+    flex-direction: column;
+    gap: .1rem;
+  }
+  li.step {
+    display: flex;
+    align-items: flex-start;
+    flex-wrap: wrap;
+    gap: .45rem;
+    padding: .25rem 0;
+  }
+  .stepcheck {
+    width: 18px; height: 18px;
+    margin-top: .18rem;
+    flex: none;
+    border: 1.5px solid var(--faint);
+    border-radius: 5px;
+    background: transparent;
+    display: grid;
+    place-items: center;
+    padding: 0;
+    transition: background .15s ease, border-color .15s ease;
+  }
+  .stepcheck svg { width: 10px; height: 10px; opacity: 0; transition: opacity .15s ease; }
+  .stepcheck svg path { stroke: var(--on-accent); stroke-width: 2.8; fill: none; stroke-linecap: round; stroke-linejoin: round; }
+  .stepcheck:hover { border-color: var(--accent); }
+  .stepcheck[aria-pressed="true"] { background: var(--accent); border-color: var(--accent); }
+  .stepcheck[aria-pressed="true"] svg { opacity: 1; }
+  .steptext {
+    flex: 1 1 11rem;
+    min-width: 0;
+    font-size: .9rem;
+    line-height: 1.45;
+    border-radius: 4px;
+    overflow-wrap: anywhere;
+  }
+  .steptext:empty::before { content: "What is this track?"; color: var(--faint); }
+  li.step.is-done .steptext { color: var(--done); text-decoration: line-through; text-decoration-thickness: 1.5px; }
+  li.step.is-done .who { opacity: .55; }
+  .stepside {
+    flex: none;
+    margin-left: auto;
+    display: inline-flex;
+    align-items: flex-start;
+    gap: .3rem;
+  }
+  .steprm {
+    flex: none;
+    width: 24px; height: 24px;
+    border: 0;
+    border-radius: 6px;
+    background: transparent;
+    color: var(--faint);
+    display: grid;
+    place-items: center;
+    padding: 0;
+  }
+  .steprm svg { width: 10px; height: 10px; }
+  .steprm svg path { stroke: currentColor; stroke-width: 2; stroke-linecap: round; }
+  .steprm:hover { background: var(--high-soft); color: var(--high); }
+
+  /* One chip style for owners; the hue is picked from the name, so the same
+     person is the same color everywhere without anyone configuring anything. */
+  .who {
+    flex: none;
+    font-size: .72rem;
+    font-weight: 600;
+    border-radius: 5px;
+    padding: .16rem .48rem;
+    min-height: 26px;
+    display: inline-flex;
+    align-items: center;
+    background: hsl(var(--wh, 210) var(--who-bg-s) var(--who-bg-l));
+    color: hsl(var(--wh, 210) var(--who-fg-s) var(--who-fg-l));
+  }
+  .who:empty { background: var(--surface-2); color: var(--faint); font-weight: 500; }
+  .who:empty::before { content: "Owner"; }
+  .who-0 { --wh: 212; }
+  .who-1 { --wh: 318; }
+  .who-2 { --wh: 135; }
+  .who-3 { --wh: 28; }
+  .who-4 { --wh: 258; }
+  .addstep {
+    border: 1px dashed var(--line);
+    background: transparent;
+    color: var(--faint);
+    border-radius: 6px;
+    padding: .2rem .55rem;
+    min-height: 28px;
+    font-size: .76rem;
+    font-weight: 600;
+  }
+  .addstep:hover { border-color: var(--accent); color: var(--accent); }
+  li.task.is-done .steps { opacity: .6; }
 
   /* ---------- code / branches ---------- */
   .repo { display: flex; flex-direction: column; gap: .7rem; }
@@ -653,7 +772,7 @@
   <button type="button" id="undo">Undo</button>
 </div>
 
-<script id="state" type="application/json">{"savedAt":0,"tasks":[{"id":"consolidate","title":"Consolidate all NPL websites into one","note":"Inventory every site we run now, pick the primary domain, move the content over, and redirect the rest so no old link dies.","tag":"Web","priority":"high","done":false},{"id":"la2027","title":"Website + sign-up form for the LA 2027 push","note":"A page for the LA push with a form that collects names, emails, and how people want to help — so the list exists well before 2027.","tag":"LA 2027","priority":"medium","done":false},{"id":"gofundme","title":"Promote Trey's GoFundMe","note":"Share the link where it will actually reach people, and keep it visible on whatever site becomes the main one.","tag":"Fundraising","priority":"low","done":false}]}</script>
+<script id="state" type="application/json">{"savedAt":0,"tasks":[{"id":"consolidate","title":"Consolidate all NPL websites into one","note":"One product, three tracks that run at the same time rather than one after the other. I take the consolidation itself and the product vision that ties it together; Rick takes the back end for messaging and email, so the funnels are ready the day the site is.","tag":"Web","priority":"high","done":false,"owner":"Me","steps":[{"id":"c-site","text":"Primary consolidation — inventory every site we run now, pick the primary domain, move the content over, and redirect the rest so no old link dies.","owner":"Me","done":false},{"id":"c-sms","text":"Back end for the text-message funnels that go out — sending, sequences, opt-in and opt-out.","owner":"Rick","done":false},{"id":"c-email","text":"Email functionality — sending, list handling, and templates, on the same contact records as the texts.","owner":"Rick","done":false},{"id":"c-vision","text":"The product vision that brings it all together — how the site, texts, and email are one thing, so the three tracks land at once.","owner":"Me","done":false}]},{"id":"la2027","title":"Website + sign-up form for the LA 2027 push","note":"A page for the LA push with a form that collects names, emails, and how people want to help — so the list exists well before 2027.","tag":"LA 2027","priority":"medium","done":false},{"id":"gofundme","title":"Promote Trey's GoFundMe","note":"Share the link where it will actually reach people, and keep it visible on whatever site becomes the main one.","tag":"Fundraising","priority":"low","done":false}]}</script>
 
 <script>
   // Pristine copy of this document, captured before anything renders. When the
@@ -674,6 +793,7 @@
     var timer = null;
     var toastTimer = null;
     var lastRemoved = null;
+    var focusStep = null;
 
     // A newer local copy wins when this device could not publish last time.
     try {
@@ -688,6 +808,49 @@
       });
     }
     function hint(msg) { $("savehint").textContent = msg; }
+
+    // The same name always lands on the same chip color, so owners stay
+    // recognizable across cards without anyone picking colors.
+    function whoClass(name) {
+      var s = String(name == null ? "" : name).trim();
+      if (!s) return "";
+      var h = 0;
+      for (var i = 0; i < s.length; i++) h = (h * 33 + s.charCodeAt(i)) >>> 0;
+      return "who-" + (h % 5);
+    }
+
+    function whoChip(name, cls, label) {
+      return '<span class="who ' + cls + " " + whoClass(name) + '" contenteditable="true" role="textbox" aria-label="' +
+        label + '">' + esc(name || "") + "</span>";
+    }
+
+    // Tracks are the parallel pieces of one task, each with its own owner, so
+    // work that can run at the same time reads as one item, not four.
+    function stepsHtml(t) {
+      var steps = t.steps || [];
+      if (!steps.length) return "";
+      var done = steps.filter(function (x) { return x.done; }).length;
+      var html = '<div class="steps"><div class="steps-head">Tracks <span class="of">' +
+        done + " of " + steps.length + ' done, in parallel</span></div><ul class="steplist">';
+      steps.forEach(function (x) {
+        html += '<li class="step' + (x.done ? " is-done" : "") + '" data-sid="' + esc(x.id) + '">' +
+          '<button class="stepcheck" aria-pressed="' + (x.done ? "true" : "false") +
+          '" aria-label="' + (x.done ? "Mark track not done" : "Mark track done") + '">' +
+          '<svg viewBox="0 0 12 12" aria-hidden="true"><path d="M2.5 6.3 4.8 8.6 9.5 3.6"/></svg></button>' +
+          '<span class="steptext" contenteditable="true" role="textbox" aria-label="Track">' + esc(x.text) + "</span>" +
+          '<span class="stepside">' + whoChip(x.owner, "stepwho", "Track owner") +
+          '<button class="steprm" aria-label="Remove track">' +
+          '<svg viewBox="0 0 12 12" aria-hidden="true"><path d="M2.5 2.5l7 7M9.5 2.5l-7 7"/></svg></button>' +
+          "</span></li>";
+      });
+      return html + "</ul></div>";
+    }
+
+    function stepFrom(el, t) {
+      var li = el.closest("li.step");
+      if (!li) return null;
+      return (t.steps || []).filter(function (x) { return x.id === li.dataset.sid; })[0] || null;
+    }
 
     function buildDoc(next) {
       var json = JSON.stringify(next).replace(/</g, "\\u003c");
@@ -741,14 +904,17 @@
             '<div class="title" contenteditable="true" role="textbox" aria-label="Task">' + esc(t.title) + "</div>" +
             '<button class="remove" aria-label="Remove task"><svg viewBox="0 0 12 12" aria-hidden="true"><path d="M2.5 2.5l7 7M9.5 2.5l-7 7"/></svg></button>' +
             '<p class="note" contenteditable="true" role="textbox" aria-label="Note">' + esc(t.note) + "</p>" +
+            stepsHtml(t) +
             '<div class="meta">' +
             '<span class="tag" contenteditable="true" role="textbox" aria-label="Tag">' + esc(t.tag) + "</span>" +
+            whoChip(t.owner, "ownerchip", "Owner") +
             '<span class="prio-wrap"><select class="prio-pick" aria-label="Priority">' +
             PRIOS.map(function (o) {
               return '<option value="' + o + '"' + (o === t.priority ? " selected" : "") + ">" +
                 o.charAt(0).toUpperCase() + o.slice(1) + "</option>";
             }).join("") +
             "</select></span>" +
+            '<button type="button" class="addstep">+ Track</button>' +
             "</div></li>";
         });
         html += "</ul></section>";
@@ -770,6 +936,12 @@
       $("updated").textContent = state.savedAt
         ? "Updated " + new Date(state.savedAt).toLocaleDateString(undefined, { month: "short", day: "numeric", year: "numeric" })
         : "Not updated yet";
+
+      if (focusStep) {
+        var fresh = $("groups").querySelector('li.step[data-sid="' + focusStep + '"] .steptext');
+        focusStep = null;
+        if (fresh) fresh.focus();
+      }
     }
 
     function taskFrom(el) {
@@ -783,6 +955,22 @@
     groups.addEventListener("click", function (e) {
       var t = taskFrom(e.target);
       if (!t) return;
+      var stepBtn = e.target.closest(".stepcheck, .steprm");
+      if (stepBtn) {
+        var s = stepFrom(stepBtn, t);
+        if (!s) return;
+        if (stepBtn.classList.contains("stepcheck")) s.done = !s.done;
+        else t.steps = t.steps.filter(function (x) { return x.id !== s.id; });
+        save();
+        return;
+      }
+      if (e.target.closest(".addstep")) {
+        t.steps = t.steps || [];
+        focusStep = "s" + Date.now();
+        t.steps.push({ id: focusStep, text: "", owner: "", done: false });
+        save();
+        return;
+      }
       if (e.target.closest(".check")) { t.done = !t.done; save(); }
       else if (e.target.closest(".remove")) {
         lastRemoved = { task: t, index: state.tasks.indexOf(t) };
@@ -802,6 +990,21 @@
       if (!t) return;
       var el = e.target;
       var text = el.textContent.replace(/\s+/g, " ").trim();
+      if (el.classList.contains("steptext") || el.classList.contains("stepwho")) {
+        var s = stepFrom(el, t);
+        if (!s) return;
+        if (el.classList.contains("stepwho")) {
+          if (text !== (s.owner || "")) { s.owner = text; save(); }
+        } else if (!text) {
+          t.steps = t.steps.filter(function (x) { return x.id !== s.id; });
+          save();
+        } else if (text !== s.text) { s.text = text; save(); }
+        return;
+      }
+      if (el.classList.contains("ownerchip")) {
+        if (text !== (t.owner || "")) { t.owner = text; save(); }
+        return;
+      }
       if (el.classList.contains("title")) {
         if (!text) { el.textContent = t.title; return; }
         if (text !== t.title) { t.title = text; save(); }
