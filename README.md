@@ -39,6 +39,14 @@ In the state JSON these are optional per task:
 
 Tasks without them render exactly as before, with an empty "Owner" chip to fill in.
 
+## Dates
+
+A task can carry an optional `date` (plain `YYYY-MM-DD`). It renders as a date picker
+chip with a countdown beside it — "in 8 weeks", "in 6 days", "tomorrow" — which turns
+red inside two weeks so a dated commitment starts shouting before it arrives. Dates are
+read as local midnight, so the day never shifts under a viewer in another timezone.
+Tasks without a date show a `+ Date` button instead; clearing the field removes the date.
+
 ## Code section
 
 Below the task list, a **Code** section lists every branch on
